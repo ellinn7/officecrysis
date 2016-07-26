@@ -167,9 +167,8 @@ function hiring(id,dep) {
             break;
         }
     }
-    document.getElementById(id).remove(); //info
-    document.getElementById(ids[0]+'_summary').remove(); //_summary
-    
+    document.getElementById(ids[0]).remove(); //info
+    document.getElementById(ids[0]+'_info').remove(); //_summary
     firable=document.getElementsByClassName('firable');
     hide(street);
     showOffice();
@@ -189,13 +188,13 @@ function getStaff() {
     for(var i=0; i<structure.length; i++) {
         var employees=structure[i].employees;
         var depId=structure[i].id;
-        addStaffDiv(office,depId,'',['width:100%'],'');
-        addStaffDiv(document.getElementById(depId),depId+'_0','<b>'+structure[i].name+'</b>',[],'summary');
+        addStaffDiv(office,depId,'',['width:100%'],'',false);
+        addStaffDiv(document.getElementById(depId),depId+'_0','<b>'+structure[i].name+'</b>',[],'summary',false);
+        addButton(document.getElementById(depId),'hire',' + ',depId+'_add',true);
         for(var j=0; j<employees.length; j++) {
             var empId=depId+'_'+employees[j].id;
             formPersonDivs(document.getElementById(depId),empId,employees[j],'firable');
         }
-        addButton(document.getElementById(depId),'hire',' + ',depId+'_add');
     }
 }
 
@@ -211,18 +210,20 @@ function formPersonDivs(el,id,person,purpose) {
         id+'_info',
         person.prof+' <br> '+person.name+' <br> '+person.salary+' $',
         ['display:none'],
-        purpose+' '+id
+        purpose+' '+id,
+        false
     );
     addStaffDiv(
         el,
         id,
         person.name,
         ['display:inline-block'],
-        'summary '+id
+        'summary '+id,
+        false
     );
 }
 
-function addStaffDiv(el,id,text,styles,classes) {
+function addStaffDiv(el,id,text,styles,classes,for_button) {
     var div = document.createElement('div');
     div.setAttribute('id',id);
     for(var k=0; k<styles.length; k++) {
@@ -234,16 +235,22 @@ function addStaffDiv(el,id,text,styles,classes) {
     el.appendChild(div);
     
     document.getElementById(id).innerHTML = text;
+    if(for_button) {
+        return document.getElementById(id);
+    }
     return true;
 }
 
-function addButton(el,cl,val,id) {
+function addButton(el,cl,val,id,in_div) {
+    if(in_div) {
+        new_el=addStaffDiv(el,id+'_div','',['width:100%'],[],true);
+    }
     var inp=document.createElement('input');
     inp.setAttribute('type','button');
     inp.setAttribute('class',cl);
     inp.setAttribute('value',val);
     inp.setAttribute('id',id);
-    el.appendChild(inp);
+    new_el.appendChild(inp);
 }
 
 function structureFromAspirants() {
