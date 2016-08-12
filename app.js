@@ -79,12 +79,21 @@ var aspirants=[
     }
 ]
 
+var balance=10000;
+var month=1;
+
 var start_menu = document.getElementById('start_menu');
 var dialog = document.getElementById('dialog');
 var secr_repl=document.getElementById('secr_repl');
 var to_staff=document.getElementById('to_staff');
 var office=document.getElementById('office');
 var street=document.getElementById('street');
+var street_back=document.getElementById('street_back');
+var management = document.getElementById('management');
+var balance_view=document.getElementById('balance');
+var pay_salary=document.getElementById('pay_salary');
+var close_month=document.getElementById('close_month');
+var month_view=document.getElementById('month');
 
 getStaff();
 
@@ -107,7 +116,24 @@ document.getElementById('boss_name').onchange = function() {
 to_staff.onclick = function() {
     hide(to_staff);
     hide(secr_repl);
+    month_view.textContent = getMonth();
+    balance_view.textContent = getBalance();
     showOffice();
+}
+
+street_back.onclick = function() {
+    hide(street);
+    showOffice();
+}
+
+pay_salary.onclick = function() {
+    countSalary();
+    balance_view.textContent=getBalance();
+}
+
+close_month.onclick = function() {
+    month++;
+    month_view.textContent=getMonth();
 }
 
 for(var i=0;i<firable.length;i++) {
@@ -122,7 +148,7 @@ for(var i=0;i<hire.length;i++) {
     hire[i].onclick=function() {
         var hire_ids=this.id.split('_');
         var dep=hire_ids[0];
-        hide(office);
+        hideOffice();
         getAspirants();
         var hirable=document.getElementsByClassName('hirable');
         summaryOnClick();
@@ -137,6 +163,23 @@ for(var i=0;i<hire.length;i++) {
     }
 }
 
+function countSalary() {
+    var sum_salary=0;
+    for(var i=0;i<structure.length;i++) {
+        for(var j=0;j<structure[i].employees.length;j++) {
+            sum_salary+=structure[i].employees[j].salary;
+        }
+    }
+    balance=balance-sum_salary;
+}
+
+function getMonth() {
+    return "Месяц "+month;
+}
+
+function getBalance() {
+    return "Баланс: "+balance+" $";
+}
 
 function firing(id) {
     var ids=id.split('_');
@@ -267,8 +310,14 @@ function structureFromAspirants() {
 }
 
 function showOffice() {
+    show(management);
     show(office);
     summaryOnClick();
+}
+
+function hideOffice() {
+    hide(management);
+    hide(office);
 }
 
 function summaryOnClick() {
